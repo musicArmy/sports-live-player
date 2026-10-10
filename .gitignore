@@ -1,0 +1,63 @@
+# Sports Live Player
+
+A modern live sports dashboard with HLS support and a JSON-driven match list.
+
+Features:
+- Search and filter matches by status
+- Live and upcoming match cards
+- Multi-source HLS/MP4 playback
+- Custom stream loader for manual URLs
+- Dark sports TV style UI
+- Works with local `data/matches.json` or remote JSON feeds
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Then open:
+
+```text
+http://localhost:4173
+```
+
+## Notes
+
+- The app auto-loads `data/matches.json`.
+- If the JSON file is missing or invalid, it falls back to demo streams.
+- HLS is handled through `hls.js`.
+- You can paste your own `.m3u8` or direct media URL in the custom source box.
+
+## Supported match JSON structure
+
+```json
+{
+  "matches": [
+    {
+      "title": "Team A vs Team B",
+      "teams": "Team A vs Team B",
+      "league": "League Name",
+      "sport": "football",
+      "status": "live",
+      "viewers": "430",
+      "server_urls": [
+        "https://example.com/stream.m3u8",
+        "https://example.com/backup.m3u8"
+      ]
+    }
+  ]
+}
+```
+
+This is a ready-to-use frontend for JSON and HLS live streaming.
+
+## Optional deployment
+
+You can deploy this as a static site on GitHub Pages, Netlify, Vercel, or any static host.
+
+---
+
+Built for the requested advanced sports streaming dashboard with JSON/HLS support and a dark premium TV-style experience.
+

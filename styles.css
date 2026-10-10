@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sports Live Player</title>
+    <meta name="description" content="Live sports streaming dashboard with JSON and HLS support" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap">
+          <div class="brand-mark">S</div>
+          <div>
+            <p class="eyebrow">LIVE SPORTS</p>
+            <h1>StreamHub</h1>
+          </div>
+        </div>
+
+        <div class="filters">
+          <div class="filter-header">
+            <span>Matches</span>
+            <button class="chip active" data-filter="all">All</button>
+          </div>
+          <div class="filter-row">
+            <button class="chip" data-filter="live">Live</button>
+            <button class="chip" data-filter="upcoming">Upcoming</button>
+            <button class="chip" data-filter="all">Featured</button>
+          </div>
+        </div>
+
+        <div class="stats-panel">
+          <div>
+            <span>Total</span>
+            <strong id="totalCount">0</strong>
+          </div>
+          <div>
+            <span>Live</span>
+            <strong id="liveCount">0</strong>
+          </div>
+          <div>
+            <span>Upcoming</span>
+            <strong id="upcomingCount">0</strong>
+          </div>
+        </div>
+
+        <label class="search-box">
+          <span>Search</span>
+          <input id="searchInput" type="search" placeholder="Search match, team or league" />
+        </label>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Now showing</p>
+            <h2 id="pageTitle">Today’s matches</h2>
+          </div>
+          <button id="manualSourceToggle" class="ghost-btn">Use custom HLS</button>
+        </header>
+
+        <section class="player-panel">
+          <div class="video-wrap">
+            <video id="player" controls playsinline></video>
+            <div id="playerPlaceholder" class="player-placeholder">
+              <div class="placeholder-icon">▶</div>
+              <h3>Select a match to start streaming</h3>
+            </div>
+          </div>
+
+          <div class="player-sidebar">
+            <div class="match-meta">
+              <p class="eyebrow" id="metaSport">Sport</p>
+              <h3 id="metaTitle">Choose a stream</h3>
+              <div class="meta-line">
+                <span id="metaLeague">League</span>
+                <span id="metaStatus" class="status-pill">—</span>
+              </div>
+            </div>
+
+            <div class="stream-actions">
+              <button id="playCurrent" class="primary-btn">Play selected source</button>
+              <button id="nextSource" class="secondary-btn">Try next source</button>
+            </div>
+
+            <div class="source-list-wrap">
+              <div class="source-header">
+                <span>Available sources</span>
+                <span id="sourceCount">0</span>
+              </div>
+              <ul id="sourceList" class="source-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="matches-section">
+          <div class="section-header">
+            <h3>Matches</h3>
+            <span id="matchSummary">0 available</span>
+          </div>
+          <div id="matchesGrid" class="matches-grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="customSourcePanel" class="custom-source-panel hidden">
+      <div class="custom-source-box">
+        <div class="source-box-header">
+          <h3>Custom HLS / MP4 URL</h3>
+          <button id="closeSourcePanel" class="icon-close" aria-label="Close">×</button>
+        </div>
+        <input id="customSourceInput" type="text" placeholder="https://example.com/stream.m3u8" />
+        <div class="source-box-actions">
+          <button id="loadCustomSource" class="primary-btn">Load stream</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.5/dist/hls.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
