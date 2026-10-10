@@ -43,6 +43,23 @@
       font-size: 0.95rem;
     }
 
+    .sync-status {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(0, 255, 100, 0.1);
+      border: 1px solid #00ff64;
+      color: #00ff64;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+
+    .sync-status.syncing {
+      background: rgba(255, 180, 0, 0.1);
+      border-color: #ffb400;
+      color: #ffb400;
+    }
+
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -166,9 +183,13 @@
       padding: 20px;
       cursor: pointer;
       transition: all 0.3s;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
 
-    .match-card:hover {
+    .match-card:hover, .match-card:active {
       border-color: #00d4ff;
       background: rgba(0, 212, 255, 0.1);
       transform: translateY(-5px);
@@ -178,6 +199,7 @@
     .match-card.selected {
       border-color: #00d4ff;
       background: rgba(0, 212, 255, 0.15);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
     }
 
     .match-title {
@@ -237,7 +259,7 @@
       transition: all 0.3s;
     }
 
-    .watch-btn:hover {
+    .watch-btn:hover, .watch-btn:active {
       background: #00a8cc;
     }
 
@@ -261,6 +283,7 @@
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 15px;
+      position: relative;
     }
 
     .video-container video {
@@ -274,6 +297,42 @@
       align-items: center;
       justify-content: center;
       color: #888;
+    }
+
+    .quality-selector {
+      background: rgba(0, 212, 255, 0.05);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .quality-selector h3 {
+      color: #00d4ff;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .quality-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .quality-btn {
+      padding: 8px 12px;
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid #00d4ff;
+      color: #00d4ff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+
+    .quality-btn:hover, .quality-btn.active {
+      background: #00d4ff;
+      color: #000;
     }
 
     .source-list {
@@ -368,6 +427,7 @@
     <header>
       <h1>🎬 Live Sports Stream</h1>
       <p>Auto-synced from dillzycreations/All-Sports-</p>
+      <div class="sync-status" id="syncStatus">✓ Connected</div>
     </header>
 
     <div class="stats">
@@ -390,10 +450,17 @@
       <div class="video-container empty" id="videoContainer">
         <div>Select a match to start streaming</div>
       </div>
+
+      <div class="quality-selector" id="qualitySelector" style="display:none;">
+        <h3>Video Quality</h3>
+        <div class="quality-buttons" id="qualityButtons"></div>
+      </div>
+
       <div class="source-list" id="sourceList" style="display:none;">
         <h3>Available Sources</h3>
         <div class="source-items" id="sourceItems"></div>
       </div>
+
       <div>
         <button class="btn btn-primary" id="playBtn" style="width:100%;padding:12px;">▶ Play Selected Match</button>
       </div>
@@ -403,7 +470,7 @@
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search matches...">
       </div>
-      <button class="btn btn-secondary" id="refreshBtn">🔄 Refresh</button>
+      <button class="btn btn-secondary" id="refreshBtn">🔄 Force Refresh</button>
     </div>
 
     <div class="filter-chips">
@@ -428,22 +495,25 @@
       matches: [],
       selectedMatch: null,
       selectedSourceIndex: 0,
+      selectedQuality: 'auto',
       filter: 'all',
       search: '',
       hls: null,
       videoPlayer: null,
+      lastSyncHash: null,
+      syncInterval: 2000, // 2 seconds for real-time sync
 
       async init() {
-        this.videoPlayer = document.querySelector('.video-container video') || this.createVideoPlayer();
+        this.videoPlayer = this.createVideoPlayer();
         this.bindEvents();
         await this.loadMatches();
-        this.startAutoRefresh();
+        this.startRealTimeSync();
       },
 
       createVideoPlayer() {
         const container = document.getElementById('videoContainer');
         container.classList.remove('empty');
-        container.innerHTML = '<video controls style="width:100%;height:100%;" controlsList="nodownload"></video>';
+        container.innerHTML = '<video controls playsinline style="width:100%;height:100%;" controlsList="nodownload"></video>';
         return container.querySelector('video');
       },
 
@@ -468,33 +538,52 @@
 
       async loadMatches() {
         try {
-          // Fetch from dillzycreations repo
-          const response = await fetch('https://raw.githubusercontent.com/dillzycreations/All-Sports-/main/data/matches.json');
+          const response = await fetch('https://raw.githubusercontent.com/dillzycreations/All-Sports-/main/data/matches.json?t=' + Date.now(), {
+            cache: 'no-store',
+            headers: { 'Cache-Control': 'no-cache' }
+          });
+
+          if (!response.ok) throw new Error('Failed to fetch');
+
           const data = await response.json();
-          
-          this.matches = (data.matches || []).map(m => ({
-            ...m,
-            status: (m.status || 'upcoming').toLowerCase(),
-            viewers: m.viewers || '0',
-            league: m.league || 'General',
-            sport: m.sport || 'sport',
-            title: m.title || 'Untitled',
-            teams: m.teams || m.title || 'Teams'
-          }));
+          const newHash = JSON.stringify(data).substring(0, 50);
 
-          this.updateStats();
-          this.render();
-          this.clearError();
+          // Check if data actually changed
+          if (this.lastSyncHash !== newHash) {
+            this.lastSyncHash = newHash;
+            
+            this.matches = (data.matches || []).map(m => ({
+              ...m,
+              status: (m.status || 'upcoming').toLowerCase(),
+              viewers: m.viewers || '0',
+              league: m.league || 'General',
+              sport: m.sport || 'sport',
+              title: m.title || 'Untitled',
+              teams: m.teams || m.title || 'Teams'
+            }));
 
-          // Auto-select first live match
-          if (!this.selectedMatch && this.matches.length > 0) {
-            const liveMatch = this.matches.find(m => m.status === 'live');
-            this.selectMatch(liveMatch || this.matches[0]);
+            this.updateStats();
+            this.render();
+            this.clearError();
+            this.updateSyncStatus('Connected');
+
+            // Auto-select first live match if none selected
+            if (!this.selectedMatch && this.matches.length > 0) {
+              const liveMatch = this.matches.find(m => m.status === 'live');
+              this.selectMatch(liveMatch || this.matches[0]);
+            }
           }
         } catch (error) {
           console.error('Error loading matches:', error);
-          this.showError('Failed to load matches. Check your internet connection.');
+          this.updateSyncStatus('Reconnecting...', true);
+          this.showError('Failed to sync. Retrying in 2 seconds...');
         }
+      },
+
+      updateSyncStatus(text, isSyncing = false) {
+        const status = document.getElementById('syncStatus');
+        status.textContent = text;
+        status.classList.toggle('syncing', isSyncing);
       },
 
       updateStats() {
@@ -536,20 +625,51 @@
           </div>
         `).join('');
 
-        container.querySelectorAll('[data-match-id]').forEach(card => {
-          card.querySelector('.watch-btn').addEventListener('click', () => {
+        // Touch/click to play
+        container.querySelectorAll('.match-card').forEach(card => {
+          const touchHandler = (e) => {
+            e.stopPropagation();
             const match = this.matches.find(m => m.match_id === card.dataset.matchId);
             if (match) this.selectMatch(match);
-          });
+          };
+
+          card.addEventListener('click', touchHandler);
+          card.addEventListener('touchstart', touchHandler);
+          card.addEventListener('touchend', (e) => e.preventDefault());
         });
       },
 
       selectMatch(match) {
         this.selectedMatch = match;
         this.selectedSourceIndex = 0;
+        this.selectedQuality = 'auto';
         this.render();
         this.renderSources();
+        this.renderQualities();
         this.playSelected();
+      },
+
+      renderQualities() {
+        if (!this.selectedMatch || !this.selectedMatch.server_urls) {
+          document.getElementById('qualitySelector').style.display = 'none';
+          return;
+        }
+
+        const qualities = ['auto', '360p', '720p', '1080p'];
+        document.getElementById('qualitySelector').style.display = 'block';
+        document.getElementById('qualityButtons').innerHTML = qualities.map(q => `
+          <button class="quality-btn ${q === this.selectedQuality ? 'active' : ''}" data-quality="${q}">
+            ${q.toUpperCase()}
+          </button>
+        `).join('');
+
+        document.querySelectorAll('[data-quality]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            this.selectedQuality = btn.dataset.quality;
+            this.renderQualities();
+            this.playSelected();
+          });
+        });
       },
 
       renderSources() {
@@ -582,7 +702,13 @@
         const sources = this.selectedMatch.server_urls.filter(s => s && typeof s === 'string');
         if (!sources.length) return;
 
-        const url = sources[this.selectedSourceIndex] || sources[0];
+        let url = sources[this.selectedSourceIndex] || sources[0];
+
+        // Add quality parameter if needed (for some services)
+        if (this.selectedQuality !== 'auto' && url.includes('.m3u8')) {
+          url = url + (url.includes('?') ? '&' : '?') + 'quality=' + this.selectedQuality;
+        }
+
         this.playStream(url);
       },
 
@@ -593,17 +719,42 @@
 
         if (url.includes('.m3u8')) {
           if (window.Hls && Hls.isSupported()) {
-            this.hls = new Hls();
+            this.hls = new Hls({
+              enableWorker: true,
+              maxMaxBufferLength: 30,
+              maxBufferLength: 10,
+              maxBufferSize: 60 * 1000 * 1000
+            });
+
             this.hls.loadSource(url);
             this.hls.attachMedia(this.videoPlayer);
+
             this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+              if (this.selectedQuality !== 'auto') {
+                const levels = this.hls.levels;
+                const level = levels.find(l => {
+                  const quality = this.selectedQuality;
+                  if (quality === '1080p') return l.height >= 1080;
+                  if (quality === '720p') return l.height >= 720 && l.height < 1080;
+                  if (quality === '360p') return l.height <= 360;
+                  return true;
+                });
+                if (level) {
+                  this.hls.currentLevel = levels.indexOf(level);
+                }
+              }
               this.videoPlayer.play().catch(() => {});
+            });
+
+            this.hls.on(Hls.Events.ERROR, (event, data) => {
+              console.warn('HLS Error:', data);
             });
             return;
           }
         }
 
         this.videoPlayer.src = url;
+        this.videoPlayer.load();
         this.videoPlayer.play().catch(() => {});
       },
 
@@ -617,8 +768,8 @@
         }
       },
 
-      startAutoRefresh() {
-        setInterval(() => this.loadMatches(), 5000);
+      startRealTimeSync() {
+        setInterval(() => this.loadMatches(), this.syncInterval);
       },
 
       showError(message) {
