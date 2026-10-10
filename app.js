@@ -1,517 +1,422 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-}
-
-:root {
-  --bg: #08111f;
-  --bg-2: #0d1728;
-  --panel: rgba(15, 23, 42, 0.9);
-  --panel-2: rgba(13, 20, 35, 0.92);
-  --card: rgba(15, 23, 42, 0.75);
-  --border: rgba(148, 163, 184, 0.18);
-  --soft: rgba(148, 163, 184, 0.14);
-  --text: #edf4ff;
-  --muted: #a1b4d1;
-  --primary: #5ad4ff;
-  --primary-2: #39c1ff;
-  --green: #35d07f;
-  --amber: #ffb84d;
-  --red: #ff5b6b;
-  --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-}
-
-html, body {
-  background:
-    radial-gradient(circle at top, rgba(58, 134, 255, 0.18), transparent 24%),
-    linear-gradient(180deg, #071422 0%, #0a1320 100%);
-  color: var(--text);
-  font-family: "Inter", sans-serif;
-  min-height: 100%;
-}
-
-body {
-  min-height: 100vh;
-}
-
-button, input {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-.app-shell {
-  display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-  min-height: 100vh;
-}
-
-.sidebar {
-  background: rgba(10, 17, 28, 0.95);
-  border-right: 1px solid var(--border);
-  padding: 24px 18px;
-}
-
-.brand-wrap {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 28px;
-}
-
-.brand-mark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--primary), #6d7cff);
-  color: #03101a;
-  font-weight: 800;
-  font-size: 1.3rem;
-  box-shadow: var(--shadow);
-}
-
-.eyebrow {
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.brand-wrap h1,
-.topbar h2,
-.match-meta h3,
-.section-header h3 {
-  font-weight: 800;
-}
-
-.filters {
-  margin-bottom: 20px;
-  padding: 18px 14px;
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.72);
-  border-radius: 18px;
-}
-
-.filter-header,
-.filter-row,
-.source-header,
-.meta-line,
-.section-header,
-.source-box-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.filter-header {
-  margin-bottom: 12px;
-  font-weight: 600;
-}
-
-.filter-row {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.chip {
-  border: 1px solid var(--border);
-  background: rgba(148, 163, 184, 0.06);
-  color: var(--text);
-  padding: 8px 12px;
-  border-radius: 999px;
-  transition: 0.2s ease;
-}
-
-.chip.active,
-.chip:hover {
-  background: rgba(90, 212, 255, 0.14);
-  border-color: rgba(90, 212, 255, 0.38);
-  color: var(--primary);
-}
-
-.stats-panel {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 22px;
-}
-
-.stats-panel > div {
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.9);
-  border-radius: 14px;
-  padding: 14px 10px;
-  display: grid;
-  gap: 4px;
-  text-align: center;
-}
-
-.stats-panel span {
-  color: var(--muted);
-  font-size: 0.75rem;
-}
-
-.search-box {
-  display: grid;
-  gap: 8px;
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.8);
-  border-radius: 14px;
-  padding: 12px 14px;
-}
-
-.search-box span {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.search-box input,
-.custom-source-box input {
-  background: transparent;
-  border: 1px solid var(--soft);
-  border-radius: 10px;
-  outline: none;
-  padding: 10px 12px;
-  color: var(--text);
-}
-
-.main-panel {
-  padding: 28px 26px 36px;
-}
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.ghost-btn,
-.primary-btn,
-.secondary-btn,
-.icon-close {
-  border-radius: 12px;
-  border: none;
-}
-
-.ghost-btn,
-.secondary-btn {
-  background: rgba(148, 163, 184, 0.08);
-  color: var(--text);
-  border: 1px solid var(--border);
-  padding: 10px 14px;
-}
-
-.primary-btn {
-  background: linear-gradient(135deg, var(--primary), var(--primary-2));
-  color: #06131d;
-  font-weight: 700;
-  padding: 12px 16px;
-}
-
-.player-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.7fr);
-  gap: 20px;
-  margin-bottom: 28px;
-}
-
-.video-wrap {
-  position: relative;
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  overflow: hidden;
-  min-height: 420px;
-  background: #020b14;
-  box-shadow: var(--shadow);
-}
-
-#player,
-.player-placeholder {
-  width: 100%;
-  height: 100%;
-  min-height: 420px;
-}
-
-#player {
-  background: #030c14;
-  display: none;
-}
-
-.player-placeholder {
-  display: grid;
-  place-items: center;
-  text-align: center;
-  backdrop-filter: blur(6px);
-  background: radial-gradient(circle at center, rgba(90, 212, 255, 0.16), rgba(2, 10, 19, 0.9));
-  padding: 24px;
-}
-
-.placeholder-icon {
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(90, 212, 255, 0.14);
-  border: 1px solid rgba(90, 212, 255, 0.25);
-  font-size: 2rem;
-  margin-bottom: 18px;
-}
-
-.player-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  background: rgba(15, 25, 39, 0.82);
-  padding: 18px;
-}
-
-.match-meta {
-  display: grid;
-  gap: 10px;
-}
-
-.match-meta h3 {
-  font-size: clamp(1.25rem, 2vw, 1.8rem);
-  line-height: 1.2;
-}
-
-.meta-line {
-  justify-content: flex-start;
-  flex-wrap: wrap;
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.1);
-  color: var(--text);
-  border: 1px solid var(--border);
-  font-size: 0.75rem;
-  text-transform: capitalize;
-}
-
-.status-pill.live {
-  background: rgba(53, 208, 127, 0.12);
-  border-color: rgba(53, 208, 127, 0.26);
-  color: var(--green);
-}
-
-.status-pill.upcoming {
-  background: rgba(255, 184, 77, 0.12);
-  border-color: rgba(255, 184, 77, 0.26);
-  color: var(--amber);
-}
-
-.stream-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.source-list-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 180px;
-}
-
-.source-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 8px;
-  max-height: 260px;
-  overflow: auto;
-}
-
-.source-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  width: 100%;
-  border: 1px solid var(--border);
-  background: rgba(148, 163, 184, 0.05);
-  color: var(--text);
-  padding: 10px 12px;
-  border-radius: 12px;
-  text-align: left;
-}
-
-.source-item.active {
-  border-color: rgba(90, 212, 255, 0.45);
-  background: rgba(90, 212, 255, 0.08);
-}
-
-.source-item span {
-  line-height: 1.3;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-.matches-section {
-  border: 1px solid var(--border);
-  background: rgba(11, 18, 31, 0.8);
-  border-radius: 22px;
-  padding: 18px;
-}
-
-.section-header {
-  margin-bottom: 16px;
-}
-
-.matches-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 14px;
-}
-
-.match-card {
-  position: relative;
-  display: grid;
-  gap: 12px;
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(18, 27, 38, 0.8), rgba(10, 16, 28, 0.8));
-  border-radius: 18px;
-  padding: 16px;
-  min-height: 190px;
-  transition: transform 0.2s ease, border-color 0.2s ease;
-}
-
-.match-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(90, 212, 255, 0.28);
-}
-
-.match-card.is-selected {
-  border-color: rgba(90, 212, 255, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(90, 212, 255, 0.2);
-}
-
-.match-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.match-card h4 {
-  font-size: 1.02rem;
-  line-height: 1.4;
-}
-
-.match-card p {
-  color: var(--muted);
-  font-size: 0.82rem;
-}
-
-.card-badges {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.08);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 0.7rem;
-}
-
-.match-card button {
-  margin-top: auto;
-  width: 100%;
-  border: none;
-  background: rgba(90, 212, 255, 0.12);
-  color: var(--text);
-  padding: 10px 12px;
-  border-radius: 12px;
-}
-
-.custom-source-panel {
-  position: fixed;
-  inset: 0;
-  background: rgba(2, 7, 15, 0.72);
-  backdrop-filter: blur(6px);
-  display: grid;
-  place-items: center;
-  z-index: 50;
-}
-
-.custom-source-panel.hidden {
-  display: none;
-}
-
-.custom-source-box {
-  width: min(600px, calc(100vw - 28px));
-  background: rgba(11, 17, 29, 0.99);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 18px;
-  box-shadow: var(--shadow);
-}
-
-.source-box-header {
-  margin-bottom: 14px;
-}
-
-.icon-close {
-  width: 30px;
-  height: 30px;
-  background: rgba(148, 163, 184, 0.08);
-  color: var(--text);
-  font-size: 1.5rem;
-}
-
-.custom-source-box input {
-  width: 100%;
-  margin-bottom: 14px;
-}
-
-@media (max-width: 980px) {
-  .app-shell {
-    grid-template-columns: 1fr;
+const state = {
+  matches: [],
+  selectedMatch: null,
+  selectedSourceIndex: 0,
+  filter: 'all',
+  search: '',
+  customSource: null,
+  hls: null,
+  autoRefreshInterval: null
+};
+
+const els = {
+  totalCount: document.getElementById('totalCount'),
+  liveCount: document.getElementById('liveCount'),
+  upcomingCount: document.getElementById('upcomingCount'),
+  searchInput: document.getElementById('searchInput'),
+  matchesGrid: document.getElementById('matchesGrid'),
+  sourceList: document.getElementById('sourceList'),
+  player: document.getElementById('player'),
+  playerPlaceholder: document.getElementById('playerPlaceholder'),
+  metaSport: document.getElementById('metaSport'),
+  metaTitle: document.getElementById('metaTitle'),
+  metaLeague: document.getElementById('metaLeague'),
+  metaStatus: document.getElementById('metaStatus'),
+  sourceCount: document.getElementById('sourceCount'),
+  matchSummary: document.getElementById('matchSummary'),
+  pageTitle: document.getElementById('pageTitle'),
+  nextSource: document.getElementById('nextSource'),
+  playCurrent: document.getElementById('playCurrent'),
+  customSourcePanel: document.getElementById('customSourcePanel'),
+  customSourceInput: document.getElementById('customSourceInput'),
+  manualSourceToggle: document.getElementById('manualSourceToggle'),
+  closeSourcePanel: document.getElementById('closeSourcePanel'),
+  loadCustomSource: document.getElementById('loadCustomSource')
+};
+
+// Demo fallback streams that work
+const demoStreams = [
+  'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+  'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
+  'https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8'
+];
+
+const fallbackMatches = [
+  {
+    title: 'Live Test Stream 1',
+    teams: 'Test Stream A vs Test Stream B',
+    league: 'Demo League',
+    sport: 'streaming',
+    status: 'live',
+    viewers: '999',
+    match_id: 'demo-1',
+    server_urls: [demoStreams[0], demoStreams[1]]
+  },
+  {
+    title: 'Live Test Stream 2',
+    teams: 'Demo Stream C vs Demo Stream D',
+    league: 'Test League',
+    sport: 'streaming',
+    status: 'live',
+    viewers: '888',
+    match_id: 'demo-2',
+    server_urls: [demoStreams[2]]
+  },
+  {
+    title: 'Upcoming Demo Stream',
+    teams: 'Stream E vs Stream F',
+    league: 'Demo Series',
+    sport: 'streaming',
+    status: 'upcoming',
+    viewers: '42',
+    match_id: 'demo-3',
+    server_urls: [demoStreams[1]]
+  }
+];
+
+function normalizeMatches(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((match) => ({
+    ...match,
+    status: (match.status || 'upcoming').toLowerCase(),
+    viewers: match.viewers || '0',
+    league: match.league || 'General',
+    sport: match.sport || 'sport',
+    title: match.title || 'Untitled Match',
+    teams: match.teams || match.title || 'Unknown Teams',
+    match_id: match.match_id || match.title || 'unknown'
+  }));
+}
+
+function getStreamSources(match) {
+  const candidates = [];
+
+  if (Array.isArray(match.server_urls) && match.server_urls.length) {
+    match.server_urls.forEach((url) => {
+      if (typeof url === 'string' && url.trim()) {
+        candidates.push(url.trim());
+      }
+    });
   }
 
-  .sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
+  ['stream_url', 'hls_url', 'url', 'source', 'stream'].forEach((key) => {
+    const value = match[key];
+    if (typeof value === 'string' && value.trim()) {
+      candidates.push(value.trim());
+    }
+  });
+
+  return [...new Set(candidates)];
+}
+
+function getVisibleMatches() {
+  const term = state.search.trim().toLowerCase();
+  return state.matches.filter((match) => {
+    const matchesFilter = state.filter === 'all' || match.status === state.filter;
+    const matchesSearch = !term || [match.title, match.teams, match.league, match.sport, match.status].join(' ').toLowerCase().includes(term);
+    return matchesFilter && matchesSearch;
+  });
+}
+
+function updateSummary() {
+  const live = state.matches.filter((m) => m.status === 'live').length;
+  const upcoming = state.matches.filter((m) => m.status === 'upcoming').length;
+
+  els.totalCount.textContent = state.matches.length;
+  els.liveCount.textContent = live;
+  els.upcomingCount.textContent = upcoming;
+  els.matchSummary.textContent = `${getVisibleMatches().length} available`;
+}
+
+function updatePageTitle() {
+  const labels = {
+    all: 'Today's matches',
+    live: 'Live now',
+    upcoming: 'Upcoming fixtures'
+  };
+  els.pageTitle.textContent = labels[state.filter] || labels.all;
+}
+
+function renderSourceList(match) {
+  const sources = getStreamSources(match);
+
+  els.sourceCount.textContent = sources.length;
+  if (!sources.length) {
+    els.sourceList.innerHTML = '<li class="source-item"><span>No stream source available</span></li>';
+    return;
   }
 
-  .player-panel {
-    grid-template-columns: 1fr;
+  const activeIndex = Math.min(state.selectedSourceIndex, sources.length - 1);
+  state.selectedSourceIndex = activeIndex;
+
+  els.sourceList.innerHTML = sources
+    .map(
+      (source, idx) => `
+    <li>
+      <button class="source-item ${idx === activeIndex ? 'active' : ''}" data-source-index="${idx}">
+        <strong>Source ${idx + 1}</strong>
+        <span>${source.includes('.m3u8') ? 'HLS' : 'Media'}</span>
+      </button>
+    </li>
+  `
+    )
+    .join('');
+
+  els.sourceList.querySelectorAll('.source-item').forEach((item) => {
+    item.addEventListener('click', () => {
+      state.selectedSourceIndex = Number(item.dataset.sourceIndex);
+      renderSourceList(match);
+      loadSelectedStream(match);
+    });
+  });
+}
+
+function renderMatches() {
+  const filtered = getVisibleMatches();
+  if (!filtered.length) {
+    els.matchesGrid.innerHTML = `
+      <div class="match-card">
+        <h4>No matches found</h4>
+        <p>Try another search or filter.</p>
+      </div>
+    `;
+    return;
+  }
+
+  els.matchesGrid.innerHTML = filtered
+    .map(
+      (match) => `
+    <article class="match-card ${state.selectedMatch && state.selectedMatch.match_id === match.match_id ? 'is-selected' : ''}">
+      <div class="match-card-top">
+        <span class="badge">${match.sport || 'sport'}</span>
+        <span class="status-pill ${match.status}">${match.status}</span>
+      </div>
+      <div>
+        <h4>${match.title}</h4>
+        <p>${match.teams}</p>
+      </div>
+      <div class="card-badges">
+        <span class="badge">${match.league}</span>
+        <span class="badge">${match.viewers || '0'} viewers</span>
+      </div>
+      <button type="button" data-match-id="${match.match_id}">Watch now</button>
+    </article>
+  `
+    )
+    .join('');
+
+  els.matchesGrid.querySelectorAll('[data-match-id]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const match = filtered.find((item) => item.match_id === button.dataset.matchId);
+      if (match) selectMatch(match);
+    });
+  });
+}
+
+function selectMatch(match) {
+  state.selectedMatch = match;
+  state.selectedSourceIndex = 0;
+  renderMatches();
+  renderMeta(match);
+  renderSourceList(match);
+  loadSelectedStream(match);
+}
+
+function renderMeta(match) {
+  const statusText = match.status || 'upcoming';
+  els.metaSport.textContent = match.sport || 'Sport';
+  els.metaTitle.textContent = match.title || 'Match';
+  els.metaLeague.textContent = match.league || 'League';
+  els.metaStatus.textContent = statusText;
+  els.metaStatus.className = `status-pill ${statusText}`;
+}
+
+function stopCurrentPlayer() {
+  if (state.hls) {
+    try {
+      state.hls.destroy();
+    } catch (error) {
+      console.warn('HLS destroy error:', error);
+    }
+    state.hls = null;
+  }
+
+  if (!els.player.paused) {
+    els.player.pause();
+  }
+  els.player.src = '';
+  els.player.removeAttribute('src');
+  els.player.load();
+}
+
+function loadSelectedStream(match) {
+  const sources = getStreamSources(match);
+  if (!sources.length) {
+    stopCurrentPlayer();
+    els.playerPlaceholder.style.display = 'grid';
+    els.player.style.display = 'none';
+    return;
+  }
+
+  const url = sources[state.selectedSourceIndex] || sources[0];
+  els.playerPlaceholder.style.display = 'none';
+  els.player.style.display = 'block';
+
+  stopCurrentPlayer();
+
+  // HLS support
+  if (url.includes('.m3u8')) {
+    if (window.Hls && Hls.isSupported()) {
+      state.hls = new Hls({
+        liveBackBufferLength: 90,
+        lowLatencyMode: false,
+        backBufferLength: 90,
+        enableWorker: true,
+        maxMaxBufferLength: 30,
+        maxBufferLength: 10,
+        maxBufferSize: 60 * 1000 * 1000
+      });
+
+      state.hls.on(Hls.Events.ERROR, (event, data) => {
+        console.warn('HLS Error:', data);
+        if (data.fatal) {
+          nextSource(match);
+        }
+      });
+
+      state.hls.loadSource(url);
+      state.hls.attachMedia(els.player);
+      els.player.play().catch((error) => console.warn('Play error:', error));
+      return;
+    } else if (els.player.canPlayType('application/vnd.apple.mpegurl')) {
+      // Safari native HLS
+      els.player.src = url;
+      els.player.load();
+      els.player.play().catch((error) => console.warn('Play error:', error));
+      return;
+    }
+  }
+
+  // Direct MP4/video
+  els.player.src = url;
+  els.player.load();
+  els.player.play().catch((error) => console.warn('Play error:', error));
+}
+
+function nextSource(match) {
+  if (!match) return;
+  const sources = getStreamSources(match);
+  if (!sources.length) return;
+  state.selectedSourceIndex = (state.selectedSourceIndex + 1) % sources.length;
+  renderSourceList(match);
+  loadSelectedStream(match);
+}
+
+async function loadMatches() {
+  try {
+    const response = await fetch('./data/matches.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error('JSON not found');
+    const json = await response.json();
+    const matches = normalizeMatches(json.matches || json.data || json);
+    
+    if (matches.length > 0) {
+      state.matches = matches;
+    } else {
+      throw new Error('No matches in JSON');
+    }
+  } catch (error) {
+    console.warn('Using fallback demo streams:', error);
+    state.matches = normalizeMatches(fallbackMatches);
+  }
+
+  updateSummary();
+  updatePageTitle();
+  renderMatches();
+
+  // Auto-select and play first live match, or first match
+  const liveMatches = state.matches.filter((m) => m.status === 'live');
+  const matchToPlay = liveMatches.length > 0 ? liveMatches[0] : state.matches[0];
+
+  if (matchToPlay) {
+    selectMatch(matchToPlay);
   }
 }
 
-@media (max-width: 600px) {
-  .main-panel {
-    padding: 18px 14px 26px;
-  }
+function bindControls() {
+  document.querySelectorAll('.chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach((item) => item.classList.remove('active'));
+      chip.classList.add('active');
+      state.filter = chip.dataset.filter || 'all';
+      updatePageTitle();
+      renderMatches();
+    });
+  });
 
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  els.searchInput.addEventListener('input', (event) => {
+    state.search = event.target.value;
+    renderMatches();
+  });
 
-  .stream-actions {
-    grid-template-columns: 1fr;
-  }
+  els.nextSource.addEventListener('click', () => nextSource(state.selectedMatch));
+  els.playCurrent.addEventListener('click', () => {
+    if (state.selectedMatch) loadSelectedStream(state.selectedMatch);
+  });
+
+  els.manualSourceToggle.addEventListener('click', () => {
+    els.customSourcePanel.classList.remove('hidden');
+    els.customSourceInput.focus();
+  });
+
+  els.closeSourcePanel.addEventListener('click', () => {
+    els.customSourcePanel.classList.add('hidden');
+  });
+
+  els.loadCustomSource.addEventListener('click', () => {
+    const customUrl = els.customSourceInput.value.trim();
+    if (!customUrl) return;
+
+    const title = state.selectedMatch ? state.selectedMatch.title : 'Custom stream';
+    const match = {
+      ...(state.selectedMatch || {}),
+      title,
+      server_urls: [customUrl],
+      match_id: 'custom-stream-' + Date.now(),
+      status: 'live'
+    };
+
+    state.selectedMatch = match;
+    state.selectedSourceIndex = 0;
+    renderMeta(match);
+    renderSourceList(match);
+    loadSelectedStream(match);
+    els.customSourcePanel.classList.add('hidden');
+    els.customSourceInput.value = '';
+  });
+
+  // Allow Enter to load custom source
+  els.customSourceInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      els.loadCustomSource.click();
+    }
+  });
 }
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => {
+  bindControls();
+  loadMatches();
+  
+  // Auto-refresh every 30 seconds
+  state.autoRefreshInterval = setInterval(() => {
+    loadMatches();
+  }, 30000);
+});
+
+// Cleanup on unload
+window.addEventListener('beforeunload', () => {
+  if (state.autoRefreshInterval) {
+    clearInterval(state.autoRefreshInterval);
+  }
+  stopCurrentPlayer();
+});
